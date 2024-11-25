@@ -12,3 +12,6 @@ source:
 run target:
     source ./venv/bin/activate && \
     python3 {{target}}.py
+
+run-csrt:
+    just run TrackerCSRT

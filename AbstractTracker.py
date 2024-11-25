@@ -1,8 +1,6 @@
-# Индивидуалное задание №1
+import numpy as np
+from abc import ABC, abstractmethod
 
-1. Реализован класс абстрактного трекера
-
-```python
 type bounding_box_type = (float, float, float, float)
 
 class AbstractTracker(ABC):
@@ -31,24 +29,4 @@ class AbstractTracker(ABC):
                  а boundingBox — новые координаты объекта.
         """
         pass
-```
 
-2. Реализован обработчик видео, 
-принимаюший в том числе дальнейшую реализацию абстрактного класса **AbstractTracker** в качестве аргумента конструктора.
-
-Использован паттерн стратегия, для переиспользования кода.
-
-```python
-    def __init__(
-            self,
-            tracker_factory: Callable[[], AbstractTracker],
-            window_name: str = "Tracker Application",
-            window_size: (int, int) = (1024, 576),
-            tracker_name: str = "EMPTY"
-    ):
-        self._tracker_factory = tracker_factory
-        self._window_name = window_name
-        self._window_size = window_size
-        self._tracker_name = tracker_name
-        self._roi = None
-```
