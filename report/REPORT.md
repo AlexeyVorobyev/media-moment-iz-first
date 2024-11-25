@@ -78,3 +78,19 @@ class TrackerCSRTAdapter(AbstractTracker):
             return False, None
 
 ```
+
+4. Реализован класс для работы алгоритма-детектора CSK и обработано 5 видео.
+> Алгоритм CSK использует ядра корреляции для отслеживания объектов в видеопоследовательности. 
+> Он применяет плотное выборочное покрытие фрагментов изображения и использует быстрое преобразование Фурье 
+> для эффективного вычисления корреляции.
+
+```python
+class CSK(AbstractTracker):
+        def init(
+            self,
+            frame: np.ndarray,
+            bounding_box: bounding_box_type
+    ) -> bool: ...
+
+    def update(self, frame: np.ndarray) -> (bool, bounding_box_type): ...
+```
