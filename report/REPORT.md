@@ -52,3 +52,29 @@ class AbstractTracker(ABC):
         self._tracker_name = tracker_name
         self._roi = None
 ```
+
+3. Реализован класс-адаптер над классом cv2.TrackerCSRT
+
+Обработано 5 видео
+
+```python
+class TrackerCSRTAdapter(AbstractTracker):
+    def __init__(self):
+        self.tracker = cv2.TrackerCSRT.create()
+
+    def init(self, image, bounding_box):
+        """
+        Инициализация трекера CSRT.
+        """
+        return self.tracker.init(image, bounding_box)
+
+    def update(self, image):
+        """
+        Обновление положения объекта с использованием кадра.
+        """
+        try:
+            return self.tracker.update(image)
+        except:
+            return False, None
+
+```
