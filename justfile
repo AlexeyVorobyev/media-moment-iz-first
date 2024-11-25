@@ -15,3 +15,6 @@ run target:
 
 run-csrt:
     just run TrackerCSRT
+
+run-csk:
+    just run TrackerCSK
