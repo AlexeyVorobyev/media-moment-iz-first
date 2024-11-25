@@ -18,3 +18,6 @@ run-csrt:
 
 run-csk:
     just run TrackerCSK
+
+run-kcf:
+    just run TrackerKCF
