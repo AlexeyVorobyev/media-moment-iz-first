@@ -4,6 +4,9 @@ from abc import ABC, abstractmethod
 type bounding_box_type = (float, float, float, float)
 
 class AbstractTracker(ABC):
+
+    debug: bool = False
+
     @abstractmethod
     def init(
             self,

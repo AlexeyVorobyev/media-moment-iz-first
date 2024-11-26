@@ -18,13 +18,15 @@ class TrackerApplication:
             tracker_factory: Callable[[], AbstractTracker],
             window_name: str = "Tracker Application",
             window_size: (int, int) = (1024, 576),
-            tracker_name: str = "EMPTY"
+            tracker_name: str = "EMPTY",
+            debug: bool = False,
     ):
         self._tracker_factory = tracker_factory
         self._window_name = window_name
         self._window_size = window_size
         self._tracker_name = tracker_name
         self._roi = None
+        self._debug = debug
 
     def __get_video_config(self, ifstream: cv2.VideoCapture):
         return {
@@ -104,6 +106,7 @@ class TrackerApplication:
                 self._roi = None
 
                 tracker = self._tracker_factory()
+                tracker.debug = self._debug
         else:
             self.__display_text(
                 'Press "s" to select object for tracking',
@@ -164,6 +167,7 @@ class TrackerApplication:
         ) if output_path is not None else None
 
         tracker = self._tracker_factory()
+        tracker.debug = self._debug
 
         while True:
             ok = self.__process_frame(tracker, video_config['fps'], ifstream, ofstream)
