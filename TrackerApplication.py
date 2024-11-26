@@ -31,16 +31,35 @@ class TrackerApplication:
             "fourcc": int(ifstream.get(cv2.CAP_PROP_FOURCC)),
             "fps": int(ifstream.get(cv2.CAP_PROP_FPS)),
             "size": (int(ifstream.get(cv2.CAP_PROP_FRAME_WIDTH)), int(ifstream.get(cv2.CAP_PROP_FRAME_HEIGHT))),
+            "duration": int(ifstream.get(cv2.CAP_PROP_FRAME_COUNT) / int(ifstream.get(cv2.CAP_PROP_FPS)))
         }
+
+    def __display_text(self, text: str, frame: np.ndarray) -> None:
+        cv2.putText(
+            frame,
+            text,
+            (50, 100),
+            cv2.QT_FONT_NORMAL,
+            1,
+            (250, 0, 250),
+            2,
+            cv2.LINE_AA
+        )
 
     def __draw_success(
             self,
             box: bounding_box_type,
             frame: np.ndarray,
+            frame_time: float,
     ):
         x, y, w, h = [int(item) for item in box]
 
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 200), 2)
+
+        self.__display_text(
+            f'Algorythm: {self._tracker_name}. Frametime: {round(frame_time * 1000)} ms ({int(1 / frame_time)} FPS)',
+            frame
+        )
 
     def __process_frame(
             self,
@@ -69,36 +88,26 @@ class TrackerApplication:
             return False
 
         if self._roi is not None:
+            timer = cv2.getTickCount()
             success, box = tracker.update(frame)
+            frame_time = (cv2.getTickCount() - timer) / cv2.getTickFrequency()
 
             if success:
-                self.__draw_success(box, frame)
+                self.__draw_success(box, frame, frame_time)
 
             else:
-                cv2.putText(
-                    frame,
+                self.__display_text(
                     'Tracking failed!',
-                    (50, 100),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    1.5,
-                    (100, 100, 255),
-                    3,
-                    cv2.LINE_AA
+                    frame
                 )
 
                 self._roi = None
 
                 tracker = self._tracker_factory()
         else:
-            cv2.putText(
-                frame,
+            self.__display_text(
                 'Press "s" to select object for tracking',
-                (50, 100),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                1.5,
-                (255, 100, 100),
-                3,
-                cv2.LINE_AA
+                frame
             )
 
         cv2.imshow(self._window_name, frame)
@@ -131,6 +140,21 @@ class TrackerApplication:
 
         ifstream = cv2.VideoCapture(input_path)
         video_config = self.__get_video_config(ifstream)
+
+        fourcc = video_config["fourcc"]
+        fourcc = (chr(fourcc & 0xff)
+                  + chr((fourcc >> 8) & 0xff)
+                  + chr((fourcc >> 16) & 0xff)
+                  + chr((fourcc >> 24) & 0xff)
+                  )
+
+        print(
+            f'{input_path} | '
+            f'{fourcc} | '
+            f'{video_config["size"][0]}x{video_config["size"][1]} | '
+            f'{video_config["fps"]} fps | '
+            f'{video_config["duration"]} seconds'
+        )
 
         ofstream = cv2.VideoWriter(
             output_path,
