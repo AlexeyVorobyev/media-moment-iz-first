@@ -18,10 +18,10 @@
 $$f(t)= \frac{a_0}{2} + \displaystyle\sum_{k=1}^\infty[a_k \cos(k \omega_1 t) + b_k \sin(k \omega_2 t)]$$
 
 где:
-- $ \frac{a_0}{2} = \frac{1}{T}\int_0^T f(t) dt $ - постоянная составляющая
-- $ \omega_1 = \frac{2\pi}{T} $ - угловая частота, скорость изменения волны 
-- $ a_k = \frac{2}{T} \int_0^T f(t) \cos(k \omega_1 t) dt $ - просто коэффициент
-- $ b_k = \frac 2 T \int_0^T f(t) \sin(k \omega_1 t) dt $ - просто коэффициент
+- $\frac{a_0}{2} = \frac{1}{T}\int_0^T f(t) dt$ - постоянная составляющая
+- $\omega_1 = \frac{2\pi}{T}$ - угловая частота, скорость изменения волны 
+- $a_k = \frac{2}{T} \int_0^T f(t) \cos(k \omega_1 t) dt$ - просто коэффициент
+- $b_k = \frac 2 T \int_0^T f(t) \sin(k \omega_1 t) dt$ - просто коэффициент
 
 ---
 
@@ -34,55 +34,55 @@ $$f(t)= \frac{a_0}{2} + \displaystyle\sum_{k=1}^\infty[a_k \cos(k \omega_1 t) + 
 
 Для приведения тригонометрических функций к комплексным числам, понадобится формула Эйлера:
 
-$$ e^{i k \omega_1 t} = \cos(k \omega_1 t) + i \sin (k \omega_1 t) $$
-$$ e^{- i k \omega_1 t} = \cos(k \omega_1 t) - i \sin (k \omega_1 t) $$
+$$e^{i k \omega_1 t} = \cos(k \omega_1 t) + i \sin (k \omega_1 t)$$
+$$e^{- i k \omega_1 t} = \cos(k \omega_1 t) - i \sin (k \omega_1 t)$$
 
 Из этих уравнений можно выразить:
 
-$$ \cos(k \omega_1 t) = \frac {e^{i k \omega_1 t} + e^{- i k \omega_1 t}} {2} $$
-$$ \sin(k \omega_1 t) = \frac {e^{i k \omega_1 t} - e^{- i k \omega_1 t}} {2 i} $$
+$$\cos(k \omega_1 t) = \frac {e^{i k \omega_1 t} + e^{- i k \omega_1 t}} {2}$$
+$$\sin(k \omega_1 t) = \frac {e^{i k \omega_1 t} - e^{- i k \omega_1 t}} {2 i}$$
 
 Выполним подстановку в исходную формулу и после преобразований получим:
 
-$$ f(t)= \frac{a_0}{2} + \displaystyle\sum_{k=1}^\infty[\frac{a_k - i b_k}{2}e^{i k \omega_1 t} + \frac{a_k + i b_k}{2}e^{- i k \omega_1 t}] $$
+$$f(t)= \frac{a_0}{2} + \displaystyle\sum_{k=1}^\infty[\frac{a_k - i b_k}{2}e^{i k \omega_1 t} + \frac{a_k + i b_k}{2}e^{- i k \omega_1 t}]$$
 
 Дроби перед экспонентой являются комплексно сопряженными числами, введем для них обозначения:
 
-$$ C_k = \frac{a_k - i b_k}{2}, C_{-k} = \frac{a_k + i b_k}{2}, C_0 = \frac {a_0}{2} $$
+$$C_k = \frac{a_k - i b_k}{2}, C_{-k} = \frac{a_k + i b_k}{2}, C_0 = \frac {a_0}{2}$$
 
 Эти обозначения называются *комплексными амплитудами*.
 
 С учетом введенных обозначений, исходная формула примет вид:
 
-$$ f(t)= C_0 + \displaystyle\sum_{k=1}^\infty[ C_k e^{i k \omega_1 t} + C_{-k} e^{- i k \omega_1 t}] $$
+$$f(t)= C_0 + \displaystyle\sum_{k=1}^\infty[ C_k e^{i k \omega_1 t} + C_{-k} e^{- i k \omega_1 t}]$$
 
 где:
-- $ C_k = \frac 1 T \int_0^T f(t) e^{-i k \omega_1 t} dt $
-- $ C_{-k} = \frac 1 T \int_0^T f(t) e^{i k \omega_1 t} dt $
-- $ C_0 = \frac 1 T \int_0^T f(t) dt $
+- $C_k = \frac 1 T \int_0^T f(t) e^{-i k \omega_1 t} dt$
+- $C_{-k} = \frac 1 T \int_0^T f(t) e^{i k \omega_1 t} dt$
+- $C_0 = \frac 1 T \int_0^T f(t) dt$
 
 Эту формулу так же можно упростить:
 
-$$ f(t) = \sum_{k=-\infty}^\infty C_k e^{i k \omega_1 t} $$
+$$f(t) = \sum_{k=-\infty}^\infty C_k e^{i k \omega_1 t}$$
 
 где:
-- $ C_k = \frac 1 T \int_0^T f(t) e^{-i k \omega_1 t} dt $
+- $C_k = \frac 1 T \int_0^T f(t) e^{-i k \omega_1 t} dt$
 
 --- 
 
 ### Дискретное преобразование
 Для дискретных функций формула принимает следующий вид:
 
-$$ X_k = \frac 1 N \sum_{n=0}^{N-1} x_n e^{-i\frac {2 \pi k n}{N}} $$
+$$X_k = \frac 1 N \sum_{n=0}^{N-1} x_n e^{-i\frac {2 \pi k n}{N}}$$
 
 где:
 - N - кол-во значений функции
 
 Подставив данную формулу вместо $C_k$ получим преобразование Фурье для дискретной функции.
 
-Коэффициент $ \frac 1 N $ в формуле часто опускается.
+Коэффициент $\frac 1 N$ в формуле часто опускается.
 
-Экспоненту $ e^{-i\frac {2 \pi k n}{N}} $ называют *поворотным множителем*,
+Экспоненту $e^{-i\frac {2 \pi k n}{N}}$ называют *поворотным множителем*,
 так как коэффициент при $i$ в показателе степени равен углу поворота.
 
 ---
