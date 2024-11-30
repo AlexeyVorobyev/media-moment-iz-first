@@ -54,7 +54,7 @@ def fft_2d(matrix: np.ndarray) -> np.ndarray:
     Returns:
     numpy.ndarray
     """
-    # Verify input dimensions are powers of 2
+
     rows, cols = matrix.shape
     if np.log2(rows) % 1 > 0 or np.log2(cols) % 1 > 0:
         fft_rows = np.array([dft_slow(row) for row in matrix])
