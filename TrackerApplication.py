@@ -117,6 +117,9 @@ class TrackerApplication:
 
         if key == ord('s'):
             self._roi = cv2.selectROI(self._window_name, frame)
+            if self._tracker_name == "CSK":
+                self._roi = self.__expand_to_power_of_two(self._roi)
+                print(f"ROI Shape: {self._roi}")
             tracker.init(frame, self._roi)
         elif key == ord('x'):
             self._roi = None
@@ -125,6 +128,27 @@ class TrackerApplication:
             ofstream.write(frame)
 
         return True
+
+    def __expand_to_power_of_two(self, roi: bounding_box_type) -> bounding_box_type:
+        """
+        Расширяет размеры ROI до ближайших степеней двойки.
+
+        :param roi: Исходный ROI в формате (x, y, w, h)
+        :return: Новый ROI, расширенный до ближайших степеней двойки
+        """
+        x, y, w, h = roi
+
+        def nearest_power_of_two(value: int) -> int:
+            return 1 << (value - 1).bit_length()
+
+        new_w = nearest_power_of_two(w)
+        new_h = nearest_power_of_two(h)
+
+        # Центрируем расширенную область вокруг исходной
+        new_x = max(0, x - (new_w - w) // 2)
+        new_y = max(0, y - (new_h - h) // 2)
+
+        return new_x, new_y, new_w, new_h
 
     def process(
             self,

@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 
 from AbstractTracker import AbstractTracker, bounding_box_type
+from dft import fft_2d
 
 
 class CSK(AbstractTracker):
@@ -26,6 +27,7 @@ class CSK(AbstractTracker):
         self.sigma = 0.2  # Ширина гауссового ядра
         self.lmbda = 0.01  # Параметр регуляризации
         self.debug = debug
+        self.our_fft = False
 
     def init(
             self,
@@ -53,7 +55,7 @@ class CSK(AbstractTracker):
         # Создать карту отклика, которая служит эталоном для обучения корреляционного фильтра
         self.y = self.target(self.width, self.height)
         if self.debug:
-            cv2.imshow('Gauss feedback map', self.y )
+            cv2.imshow('Gauss feedback map', self.y)
 
         # Определение центра карты отклика
         # Найти координаты пика y (максимального значения), которые задают начальное положение объекта.
@@ -138,7 +140,10 @@ class CSK(AbstractTracker):
         # np.conj(np.fft.fft2(x2)) берёт комплексное сопряжение преобразования x2, чтобы получить взаимную корреляцию
         # np.fft.ifft2(...) преобразует результат обратно в пространственную область.
         # np.fft.fftshift(...) центрирует результат корреляции, чтобы значения соответствовали физическим сдвигам.
-        c = np.fft.fftshift(np.fft.ifft2(np.fft.fft2(x1) * np.conj(np.fft.fft2(x2))))
+        if self.our_fft:
+            c = np.fft.fftshift(np.fft.ifft2(fft_2d(x1) * np.conj(fft_2d(x2))))
+        else:
+            c = np.fft.fftshift(np.fft.ifft2(np.fft.fft2(x1) * np.conj(np.fft.fft2(x2))))
 
         #  Вычисление евклидового расстояния
         d = (
@@ -174,7 +179,10 @@ class CSK(AbstractTracker):
         # Матрица ядра k также преобразуется через FFT
         # Регуляризация добавляется к знаменателю для стабилизации обучения
         # Полученная модель описывает, как объект выглядит в частотной области
-        alphaf = np.fft.fft2(y) / (np.fft.fft2(k) + lmbda)
+        if self.our_fft:
+            alphaf = fft_2d(y) / (fft_2d(k) + lmbda)
+        else:
+            alphaf = np.fft.fft2(y) / (np.fft.fft2(k) + lmbda)
 
         return alphaf
 
@@ -189,7 +197,10 @@ class CSK(AbstractTracker):
         :return: Карта откликов.
         """
         k = self.dgk(x, z, sigma)
-        responses = np.real(np.fft.ifft2(alphaf * np.fft.fft2(k)))
+        if self.our_fft:
+            responses = np.real(np.fft.ifft2(alphaf * fft_2d(k)))
+        else:
+            responses = np.real(np.fft.ifft2(alphaf * np.fft.fft2(k)))
         if self.debug:
             cv2.imshow('Gauss kernel', k)
             cv2.imshow('The reference fragment of the search', x)

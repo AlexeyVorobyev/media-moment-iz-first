@@ -14,5 +14,6 @@ video_to_process = [
     "resources/video5.mp4"
 ]
 
-for item in video_to_process:
-    app.process(item, f"{item.split("/")[0]}/csk/{item.split("/")[1]}")
+if __name__ == "__main__":
+    for item in video_to_process:
+        app.process(item, f"{item.split("/")[0]}/csk-l/{item.split("/")[1]}")
