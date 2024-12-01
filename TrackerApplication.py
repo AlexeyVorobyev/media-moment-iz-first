@@ -59,7 +59,7 @@ class TrackerApplication:
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 200), 2)
 
         self.__display_text(
-            f'Algorythm: {self._tracker_name}. Frametime: {round(frame_time * 1000)} ms ({int(1 / frame_time)} FPS)',
+            f'Algorithm: {self._tracker_name}. Frametime: {round(frame_time * 1000)} ms ({int(1 / frame_time)} FPS)',
             frame
         )
 
