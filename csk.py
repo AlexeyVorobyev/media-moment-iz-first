@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 from AbstractTracker import AbstractTracker, bounding_box_type
-from dft import fft_2d
+from dft import fft_2d, ifft_2d
 
 
 class CSK(AbstractTracker):
@@ -141,7 +141,7 @@ class CSK(AbstractTracker):
         # np.fft.ifft2(...) преобразует результат обратно в пространственную область.
         # np.fft.fftshift(...) центрирует результат корреляции, чтобы значения соответствовали физическим сдвигам.
         if self.our_fft:
-            c = np.fft.fftshift(np.fft.ifft2(fft_2d(x1) * np.conj(fft_2d(x2))))
+            c = np.fft.fftshift(ifft_2d(fft_2d(x1) * np.conj(fft_2d(x2))))
         else:
             c = np.fft.fftshift(np.fft.ifft2(np.fft.fft2(x1) * np.conj(np.fft.fft2(x2))))
 
@@ -198,7 +198,7 @@ class CSK(AbstractTracker):
         """
         k = self.dgk(x, z, sigma)
         if self.our_fft:
-            responses = np.real(np.fft.ifft2(alphaf * fft_2d(k)))
+            responses = np.real(ifft_2d(alphaf * fft_2d(k)))
         else:
             responses = np.real(np.fft.ifft2(alphaf * np.fft.fft2(k)))
         if self.debug:

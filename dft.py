@@ -92,7 +92,7 @@ def fft(x: np.ndarray) -> np.ndarray:
     Returns:
     numpy.ndarray
     """
-    N = len(x)
+    N = x.shape[0]
     if N <= 1:
         return x
     if np.log2(N) % 1 > 0:
@@ -106,6 +106,58 @@ def fft(x: np.ndarray) -> np.ndarray:
                     [even[k] - T[k] for k in range(N // 2)])
 
 
+import numpy as np
+
+
+def ifft(x: np.ndarray) -> np.ndarray:
+    """
+    Проводит быстрое обратное преобразование Фурье (IFFT) для одномерного массива,
+    используя алгоритм Кули-Тьюки.
+
+    Parameters:
+    x : numpy.ndarray
+        Входящий массив в частотной области
+
+    Returns:
+    numpy.ndarray
+    """
+    N = x.shape[0]
+    if N <= 1:
+        return x
+    if np.log2(N) % 1 > 0:
+        raise ValueError("Size of input must be a power of 2")
+
+    even = ifft(x[0::2])
+    odd = ifft(x[1::2])
+
+    T = [np.exp(2j * np.pi * k / N) * odd[k] for k in range(N // 2)]
+    return np.array([even[k] + T[k] for k in range(N // 2)] +
+                    [even[k] - T[k] for k in range(N // 2)]) / 2
+
+
+def ifft_2d(matrix: np.ndarray) -> np.ndarray:
+    """
+    Проводит обратное быстрое преобразование Фурье (IFFT) для матрицы
+
+    Parameters:
+    matrix : numpy.ndarray
+        Входящая матрица в частотной области
+
+    Returns:
+    numpy.ndarray
+        Обратное преобразование Фурье в пространственной области
+    """
+
+    rows, cols = matrix.shape
+    if np.log2(rows) % 1 > 0 or np.log2(cols) % 1 > 0:
+        ifft_result = np.fft.ifft2(matrix)
+    else:
+        ifft_rows = np.array([ifft(row) for row in matrix])
+        ifft_result = np.array([ifft(col) for col in ifft_rows.T]).T
+
+    return ifft_result
+
+
 if __name__ == "__main__":
     # Тест, что результат нашего преобразования совпадает с реализацией NumPy
     x = np.random.random((512, 256))
@@ -113,4 +165,5 @@ if __name__ == "__main__":
     num = np.fft.fft2(x)
     print(num)
     print(np.allclose(my_fft, num))
-    print(my_fft)
+    print(np.allclose(ifft_2d(my_fft), np.fft.ifft2(my_fft)))
+    print(np.allclose(ifft_2d(num), np.fft.ifft2(num)))
